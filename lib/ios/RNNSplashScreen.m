@@ -8,8 +8,9 @@
 	CGRect screenBounds = [UIScreen mainScreen].bounds;
 	CGFloat screenScale = [UIScreen mainScreen].scale;
 	UIViewController *viewController = nil;
-	
+
 	NSString* launchStoryBoard = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchStoryboardName"];
+#if !TARGET_OS_TV
 	if (launchStoryBoard != nil) {//load the splash from the storyboard that's defined in the info.plist as the LaunchScreen
 		@try
 		{
@@ -27,7 +28,9 @@
 			}
 		}
 	}
-	else {//load the splash from the DEfault image or from LaunchImage in the xcassets
+	else
+#endif
+	{//load the splash from the DEfault image or from LaunchImage in the xcassets
 		CGFloat screenHeight = screenBounds.size.height;
 		
 		NSString* imageName = @"Default";

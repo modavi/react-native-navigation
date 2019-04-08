@@ -103,9 +103,11 @@
 									isFocused:searchController.searchBar.isFirstResponder];
 }
 
+#if !TARGET_OS_TV
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
 	[self.eventEmitter sendOnSearchBarCancelPressed:self.layoutInfo.componentId];
 }
+#endif
 
 -(BOOL)isCustomTransitioned {
 	return self.resolveOptions.customTransition.animations != nil;
@@ -115,6 +117,7 @@
 	return !self.creator;
 }
 
+#if !TARGET_OS_TV
 - (BOOL)prefersStatusBarHidden {
 	if (self.resolveOptions.statusBar.visible.hasValue) {
 		return ![self.resolveOptions.statusBar.visible get];
@@ -136,6 +139,7 @@
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
 	return self.resolveOptions.layout.supportedOrientations;
 }
+#endif
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
 	RNNRootViewController* vc =  (RNNRootViewController*)viewController;

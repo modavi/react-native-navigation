@@ -30,6 +30,7 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 
 - (void)rnn_setSearchBarWithPlaceholder:(NSString *)placeholder 
 						hideNavBarOnFocusSearchBar:(BOOL)hideNavBarOnFocusSearchBar {
+#ifndef TARGET_OS_TV
 	if (@available(iOS 11.0, *)) {
 		if (!self.navigationItem.searchController) {
 			UISearchController *search = [[UISearchController alloc]initWithSearchResultsController:nil];
@@ -49,12 +50,15 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 			self.definesPresentationContext = YES;
 		}
 	}
+#endif
 }
 
 - (void)rnn_setSearchBarHiddenWhenScrolling:(BOOL)searchBarHidden {
+#ifndef TARGET_OS_TV
 	if (@available(iOS 11.0, *)) {
 		self.navigationItem.hidesSearchBarWhenScrolling = searchBarHidden;
 	}
+#endif
 }
 
 - (void)rnn_setNavigationItemTitle:(NSString *)title {
@@ -96,6 +100,7 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 }
 
 - (void)rnn_setStatusBarStyle:(NSString *)style animated:(BOOL)animated {
+#ifndef TARGET_OS_TV
 	if (animated) {
 		[UIView animateWithDuration:[self statusBarAnimationDuration:animated] animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
@@ -103,9 +108,11 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 	} else {
 		[self setNeedsStatusBarAppearanceUpdate];
 	}
+#endif
 }
 
 - (void)rnn_setTopBarPrefersLargeTitle:(BOOL)prefersLargeTitle {
+#ifndef TARGET_OS_TV
 	if (@available(iOS 11.0, *)) {
 		if (prefersLargeTitle) {
 			self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
@@ -113,10 +120,12 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 			self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeNever;
 		}
 	}
+#endif
 }
 
 
 - (void)rnn_setStatusBarBlur:(BOOL)blur {
+#ifndef TARGET_OS_TV
 	UIView* curBlurView = [self.view viewWithTag:BLUR_STATUS_TAG];
 	if (blur) {
 		if (!curBlurView) {
@@ -130,6 +139,7 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 			[curBlurView removeFromSuperview];
 		}
 	}
+#endif
 }
 
 - (void)rnn_setBackgroundColor:(UIColor *)backgroundColor {
@@ -137,7 +147,9 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 }
 
 - (void)rnn_setBackButtonVisible:(BOOL)visible {
+#ifndef TARGET_OS_TV
 	self.navigationItem.hidesBackButton = !visible;
+#endif
 }
 
 - (CGFloat)statusBarAnimationDuration:(BOOL)animated {

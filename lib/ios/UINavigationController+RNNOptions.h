@@ -2,7 +2,9 @@
 
 @interface UINavigationController (RNNOptions)
 
+#if !TARGET_OS_TV
 - (void)rnn_setInteractivePopGestureEnabled:(BOOL)enabled;
+#endif
 
 - (void)rnn_setRootBackgroundImage:(UIImage *)backgroundImage;
 
@@ -14,7 +16,9 @@
 
 - (void)rnn_setNavigationBarNoBorder:(BOOL)noBorder;
 
+#if !TARGET_OS_TV
 - (void)rnn_setBarStyle:(UIBarStyle)barStyle;
+#endif
 
 - (void)rnn_setNavigationBarFontFamily:(NSString *)fontFamily fontSize:(NSNumber *)fontSize color:(UIColor *)color;
 

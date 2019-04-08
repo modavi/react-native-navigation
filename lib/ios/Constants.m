@@ -11,7 +11,11 @@
 }
 
 + (CGFloat)statusBarHeight {
+#if !TARGET_OS_TV
 	return [UIApplication sharedApplication].statusBarFrame.size.height;
+#else
+	return 0.0;
+#endif
 }
 
 + (CGFloat)bottomTabsHeight {

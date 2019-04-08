@@ -6,9 +6,11 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 
 @implementation UINavigationController (RNNOptions)
 
+#if !TARGET_OS_TV
 - (void)rnn_setInteractivePopGestureEnabled:(BOOL)enabled {
 	self.interactivePopGestureRecognizer.enabled = enabled;
 }
+#endif
 
 - (void)rnn_setRootBackgroundImage:(UIImage *)backgroundImage {
 	UIImageView* backgroundImageView = (self.view.subviews.count > 0) ? self.view.subviews[0] : nil;
@@ -31,7 +33,9 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 }
 
 - (void)rnn_hideBarsOnScroll:(BOOL)hideOnScroll {
+#if !TARGET_OS_TV
 	self.hidesBarsOnSwipe = hideOnScroll;
+#endif
 }
 
 - (void)rnn_setNavigationBarNoBorder:(BOOL)noBorder {
@@ -42,9 +46,11 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 	}
 }
 
+#if !TARGET_OS_TV
 - (void)rnn_setBarStyle:(UIBarStyle)barStyle {
 	self.navigationBar.barStyle = barStyle;
 }
+#endif
 
 - (void)rnn_setNavigationBarFontFamily:(NSString *)fontFamily fontSize:(NSNumber *)fontSize color:(UIColor *)color {
 	NSDictionary* fontAttributes = [RNNFontAttributesCreator createFontAttributesWithFontFamily:fontFamily fontSize:fontSize color:color];
@@ -55,6 +61,7 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 }
 
 - (void)rnn_setNavigationBarLargeTitleVisible:(BOOL)visible {
+#if !TARGET_OS_TV
 	if (@available(iOS 11.0, *)) {
 		if (visible){
 			self.navigationBar.prefersLargeTitles = YES;
@@ -62,13 +69,16 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 			self.navigationBar.prefersLargeTitles = NO;
 		}
 	}
+#endif
 }
 
 - (void)rnn_setNavigationBarLargeTitleFontFamily:(NSString *)fontFamily fontSize:(NSNumber *)fontSize color:(UIColor *)color {
+#if !TARGET_OS_TV
 	if (@available(iOS 11.0, *)) {
 		NSDictionary* fontAttributes = [RNNFontAttributesCreator createFontAttributesWithFontFamily:fontFamily fontSize:fontSize color:color];
 		self.navigationBar.largeTitleTextAttributes = fontAttributes;
 	}
+#endif
 }
 
 - (void)rnn_setNavigationBarTranslucent:(BOOL)translucent {
@@ -76,6 +86,7 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 }
 
 - (void)rnn_setNavigationBarBlur:(BOOL)blur {
+#if !TARGET_OS_TV
 	if (blur && ![self.navigationBar viewWithTag:BLUR_TOPBAR_TAG]) {
 		[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
 		self.navigationBar.shadowImage = [UIImage new];
@@ -94,9 +105,11 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 			[blur removeFromSuperview];
 		}
 	}
+#endif
 }
 
 - (void)rnn_setBackButtonIcon:(UIImage *)icon withColor:(UIColor *)color title:(NSString *)title {
+#if !TARGET_OS_TV
 	UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
 	if (icon) {
 		backItem.image = color
@@ -113,6 +126,7 @@ const NSInteger BLUR_TOPBAR_TAG = 78264802;
 	backItem.tintColor = color;
 	
 	lastViewControllerInStack.navigationItem.backBarButtonItem = backItem;
+#endif
 }
 
 - (void)rnn_setBackButtonColor:(UIColor *)color {
