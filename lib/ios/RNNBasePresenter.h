@@ -1,7 +1,5 @@
 #import "RNNNavigationOptions.h"
 
-typedef void (^RNNReactViewReadyCompletionBlock)(void);
-
 @interface RNNBasePresenter : NSObject
 
 @property (nonatomic, weak) id bindedViewController;
@@ -17,7 +15,5 @@ typedef void (^RNNReactViewReadyCompletionBlock)(void);
 - (void)applyOptionsOnWillMoveToParentViewController:(RNNNavigationOptions *)options;
 
 - (void)mergeOptions:(RNNNavigationOptions *)newOptions currentOptions:(RNNNavigationOptions *)currentOptions defaultOptions:(RNNNavigationOptions *)defaultOptions;
-
-- (void)renderComponents:(RNNNavigationOptions *)options perform:(RNNReactViewReadyCompletionBlock)readyBlock;
 
 @end

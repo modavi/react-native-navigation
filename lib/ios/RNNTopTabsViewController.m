@@ -2,11 +2,10 @@
 #import "RNNSegmentedControl.h"
 #import "ReactNativeNavigation.h"
 #import "RNNRootViewController.h"
-#import "UIViewController+LayoutProtocol.h"
 
 @interface RNNTopTabsViewController () {
 	NSArray* _viewControllers;
-	UIViewController* _currentViewController;
+	UIViewController<RNNParentProtocol>* _currentViewController;
 	RNNSegmentedControl* _segmentedControl;
 }
 
@@ -41,8 +40,42 @@
 	return self;
 }
 
-- (UIViewController *)getCurrentChild {
-	return _currentViewController;
+- (void)onChildWillAppear {
+	[_presenter applyOptions:self.resolveOptions];
+	[((UIViewController<RNNParentProtocol> *)self.parentViewController) onChildWillAppear];
+}
+
+- (RNNNavigationOptions *)resolveOptions {
+	return [(RNNNavigationOptions *)[self.options mergeInOptions:self.getCurrentChild.resolveOptions.copy] withDefault:self.defaultOptions];
+}
+
+- (void)mergeOptions:(RNNNavigationOptions *)options {
+	[_presenter mergeOptions:options currentOptions:self.options defaultOptions:self.defaultOptions];
+	[((UIViewController<RNNLayoutProtocol> *)self.parentViewController) mergeOptions:options];
+}
+
+- (void)overrideOptions:(RNNNavigationOptions *)options {
+	[self.options overrideOptions:options];
+}
+
+- (void)renderTreeAndWait:(BOOL)wait perform:(RNNReactViewReadyCompletionBlock)readyBlock {
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+		dispatch_group_t group = dispatch_group_create();
+		for (UIViewController<RNNLayoutProtocol>* childViewController in self.childViewControllers) {
+			dispatch_group_enter(group);
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[childViewController renderTreeAndWait:wait perform:^{
+					dispatch_group_leave(group);
+				}];
+			});
+		}
+		
+		dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			readyBlock();
+		});
+	});
 }
 
 - (void)createTabBar {
@@ -67,7 +100,7 @@
 }
 
 - (void)setSelectedViewControllerIndex:(NSUInteger)index {
-	UIViewController *toVC = _viewControllers[index];
+	UIViewController<RNNParentProtocol> *toVC = _viewControllers[index];
 	[_contentView addSubview:toVC.view];
 	[_currentViewController.view removeFromSuperview];
 	_currentViewController = toVC;
@@ -91,6 +124,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+}
+
+#pragma mark RNNParentProtocol
+
+- (UIViewController *)getCurrentChild {
+	return _currentViewController;
 }
 
 @end

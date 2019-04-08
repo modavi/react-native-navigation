@@ -5,7 +5,6 @@
 #import "UIImage+tint.h"
 #import "RNNRootViewController.h"
 #import "UIImage+insets.h"
-#import "UIViewController+LayoutProtocol.h"
 
 @interface RNNNavigationButtons()
 

@@ -1,10 +1,13 @@
 #import <UIKit/UIKit.h>
+#import "RNNParentProtocol.h"
 #import "RNNSplitViewControllerPresenter.h"
 #import "UISplitViewController+RNNOptions.h"
-#import "RNNLayoutProtocol.h"
 
-@interface RNNSplitViewController : UISplitViewController <RNNLayoutProtocol>
+@interface RNNSplitViewController : UISplitViewController <RNNParentProtocol>
 
-- (void)bindChildViewControllers:(NSArray<UIViewController<RNNLayoutProtocol> *> *)viewControllers;
+@property (nonatomic, strong) RNNNavigationOptions* options;
+@property (nonatomic, strong) RNNNavigationOptions* defaultOptions;
+@property (nonatomic, retain) RNNLayoutInfo* layoutInfo;
+@property (nonatomic, retain) RNNSplitViewControllerPresenter* presenter;
 
 @end

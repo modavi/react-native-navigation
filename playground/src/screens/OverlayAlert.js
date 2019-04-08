@@ -2,8 +2,6 @@ const React = require('react');
 
 const { Text, Button, View, Alert, Platform } = require('react-native');
 const { Navigation } = require('react-native-navigation');
-const { component } = require('../commons/Layouts');
-const Screens = require('./Screens');
 
 const {
   OVERLAY_ALERT_HEADER,
@@ -25,8 +23,13 @@ class OverlayAlert extends React.PureComponent {
   }
 
   dismiss = () => Navigation.dismissOverlay(this.props.componentId);
-  setRoot = () => Navigation.setRoot({ root: component(Screens.Pushed) });
-
+  setRoot = () => Navigation.setRoot({
+    root: {
+      component: {
+        name: 'navigation.playground.TextScreen'
+      }
+    }
+  });
   setInterceptTouch = () => Navigation.mergeOptions(this.props.componentId, {
     overlay: {
       interceptTouchOutside: false

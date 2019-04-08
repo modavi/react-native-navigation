@@ -11,4 +11,6 @@
 
 - (void)applyOptionsBeforePopping:(RNNNavigationOptions *)options;
 
+- (void)renderComponents:(RNNNavigationOptions *)options perform:(RNNReactViewReadyCompletionBlock)readyBlock;
+
 @end

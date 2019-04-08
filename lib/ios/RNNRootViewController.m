@@ -3,15 +3,26 @@
 #import "RNNAnimator.h"
 #import "RNNPushAnimation.h"
 #import "RNNReactView.h"
+#import "RNNParentProtocol.h"
 #import "RNNAnimationsTransitionDelegate.h"
-#import "UIViewController+LayoutProtocol.h"
 
 @implementation RNNRootViewController
 
 @synthesize previewCallback;
 
 - (instancetype)initWithLayoutInfo:(RNNLayoutInfo *)layoutInfo rootViewCreator:(id<RNNRootViewCreator>)creator eventEmitter:(RNNEventEmitter *)eventEmitter presenter:(RNNViewControllerPresenter *)presenter options:(RNNNavigationOptions *)options defaultOptions:(RNNNavigationOptions *)defaultOptions {
-	self = [super initWithLayoutInfo:layoutInfo creator:creator options:options defaultOptions:defaultOptions presenter:presenter eventEmitter:eventEmitter];
+	self = [super init];
+	
+	self.layoutInfo = layoutInfo;
+	self.creator = creator;
+	
+	self.eventEmitter = eventEmitter;
+	self.presenter = presenter;
+	[self.presenter bindViewController:self];
+	self.options = options;
+	self.defaultOptions = defaultOptions;
+	
+	[self.presenter applyOptionsOnInit:self.resolveOptions];
 	
 	self.animator = [[RNNAnimator alloc] initWithTransitionOptions:self.resolveOptions.customTransition];
 	
@@ -35,6 +46,12 @@
 	[viewController didMoveToParentViewController:self];
 }
 
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+	if (parent) {
+		[_presenter applyOptionsOnWillMoveToParentViewController:self.resolveOptions];
+	}
+}
+
 - (void)mergeOptions:(RNNNavigationOptions *)options {
 	[_presenter mergeOptions:options currentOptions:self.options defaultOptions:self.defaultOptions];
 	[((UIViewController<RNNLayoutProtocol> *)self.parentViewController) mergeOptions:options];
@@ -50,7 +67,11 @@
 	[_presenter applyOptions:self.resolveOptions];
 	[_presenter renderComponents:self.resolveOptions perform:nil];
 	
-	[((UIViewController *)self.parentViewController) onChildWillAppear];
+	[((UIViewController<RNNParentProtocol> *)self.parentViewController) onChildWillAppear];
+}
+
+- (RNNNavigationOptions *)resolveOptions {
+	return [self.options withDefault:self.defaultOptions];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -76,7 +97,7 @@
 	}
 	
 	__block RNNReactViewReadyCompletionBlock readyBlockCopy = readyBlock;
-	UIView* reactView = [self.creator createRootView:self.layoutInfo.name rootViewId:self.layoutInfo.componentId availableSize:[UIScreen mainScreen].bounds.size reactViewReadyBlock:^{
+	UIView* reactView = [_creator createRootView:self.layoutInfo.name rootViewId:self.layoutInfo.componentId availableSize:[UIScreen mainScreen].bounds.size reactViewReadyBlock:^{
 		[_presenter renderComponents:self.resolveOptions perform:^{
 			if (readyBlockCopy) {
 				readyBlockCopy();
@@ -94,7 +115,7 @@
 }
 
 - (UIViewController *)getCurrentChild {
-	return nil;
+	return self;
 }
 
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {

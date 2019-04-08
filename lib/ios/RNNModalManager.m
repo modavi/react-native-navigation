@@ -1,7 +1,6 @@
 #import "RNNModalManager.h"
 #import "RNNRootViewController.h"
 #import "RNNAnimationsTransitionDelegate.h"
-#import "RNNLayoutProtocol.h"
 
 @implementation RNNModalManager {
 	NSMutableArray* _pendingModalIdsToDismiss;
@@ -62,7 +61,7 @@
 
 
 -(void)removePendingNextModalIfOnTop:(RNNTransitionCompletionBlock)completion {
-	UIViewController<RNNLayoutProtocol> *modalToDismiss = [_pendingModalIdsToDismiss lastObject];
+	UIViewController<RNNParentProtocol> *modalToDismiss = [_pendingModalIdsToDismiss lastObject];
 	RNNNavigationOptions* options = modalToDismiss.resolveOptions;
 
 	if(!modalToDismiss) {
